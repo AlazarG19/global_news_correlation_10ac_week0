@@ -1,0 +1,1 @@
+# This folder is specfically created to save the db schema and any other related docs
