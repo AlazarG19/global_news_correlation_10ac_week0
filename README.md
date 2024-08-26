@@ -8,11 +8,11 @@ The Main focus of this project is to conduct a comprehensive Exploratory Data an
 global news data. 
 The key objectives include 
 
-- Quantitative Analysis:
-- Keyword and Topic Analysis:
-- Event Modeling:
-- Visualization and Interpretation:
-- Model Building and Versioning:
+- Quantitative Analysis
+- Keyword and Topic Analysis
+- Event Modeling
+- Visualization and Interpretation
+- Model Building and Versioning
 - Dashboard Design and Deployment
 
 ## Table of Contents
@@ -80,7 +80,7 @@ Now, your virtual environment is created and activated. You can install packages
 
 ### Clone this package
 
-To install the `network_analysis` package, follow these steps:
+To install the `global_media_news_analysis` package, follow these steps:
 
 1. Clone the repository:
     ```bash
