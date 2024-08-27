@@ -15,14 +15,22 @@ def extract_keywords(word,pattern):
     else:
         return None 
 
-
+def pie_chart(title,labels,count):
     ''' 
-    a function to extract words from a list 
+    a function to create a piechart
     '''
-
-    word_list = [str(word) for word in word_list]
+    plt.figure(figsize=(8, 6))
+    sns.set_style("whitegrid")
+    print(count)
+    print(labels)
+    plt.pie(x=count, labels=labels, autopct='%1.1f%%')
+    plt.title(title)
+    plt.show()
     
-    # Find all matches in the text using the pattern
-    matches = re.findall(pattern, text)
-    
-    return ",".join(matches) if len(matches) != 0 else np.nan
+def histogram(data,x_axis,title,x_label,y_label,figsize=(8,6),bins=50):
+    plt.figure(figsize=figsize)
+    sns.histplot(data=data,bins=bins,x=x_axis)
+    plt.title(title)
+    plt.xlabel(x_label)
+    plt.ylabel(y_label)
+    plt.show()
