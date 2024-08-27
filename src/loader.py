@@ -12,7 +12,6 @@ class NewsDataLoader:
         path: path to the data
         '''
         self.paths = paths
-        print(self.paths)
 
     def get_data(self,dataname):
         '''
