@@ -30,7 +30,7 @@ def test_barchart():
     title = "Bar Chart"
     figsize = (18, 6)
     orientation = "horizontal"
-    utils.barchart(x_axis, y_axis, x_label, y_label, title, figsize, orientation)
+    utils.barchart(x_axis, y_axis, x_label, y_label, title, orientation, figsize )
     # Check if the plot is created successfully
     assert plt.gca().has_data()
     
