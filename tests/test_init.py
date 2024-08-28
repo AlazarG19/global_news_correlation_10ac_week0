@@ -29,7 +29,8 @@ def test_barchart():
     y_label = "Y Axis"
     title = "Bar Chart"
     figsize = (18, 6)
-    utils.barchart(x_axis, y_axis, x_label, y_label, title, figsize)
+    orientation = "horizontal"
+    utils.barchart(x_axis, y_axis, x_label, y_label, title, figsize, orientation)
     # Check if the plot is created successfully
     assert plt.gca().has_data()
     
@@ -46,6 +47,7 @@ def test_barchart_with_grouping():
     ascending = True
     grouping = ""
     figsize = (18, 6)
-    utils.barchart_with_grouping(df, x_axis, y_axis, title, x_label, y_label, top, ascending, grouping, figsize)
+    orientation = "horizontal"
+    utils.barchart_with_grouping(df, x_axis, y_axis, title, x_label, y_label, top, ascending, grouping, figsize, orientation)
     # Check if the plot is created successfully
     assert plt.gca().has_data()
