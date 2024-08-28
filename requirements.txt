@@ -4,3 +4,4 @@ seaborn
 numpy
 nltk
 sklearn
+pytest
