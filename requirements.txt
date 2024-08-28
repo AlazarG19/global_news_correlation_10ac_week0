@@ -3,5 +3,5 @@ matplotlib
 seaborn
 numpy
 nltk
-sklearn
+scikit-learn
 pytest
