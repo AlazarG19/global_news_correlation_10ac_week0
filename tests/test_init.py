@@ -48,6 +48,6 @@ def test_barchart_with_grouping():
     grouping = ""
     figsize = (18, 6)
     orientation = "horizontal"
-    utils.barchart_with_grouping(df, x_axis, y_axis, title, x_label, y_label, top, ascending, grouping, figsize, orientation)
+    utils.barchart_with_grouping(df, x_axis, y_axis, title, x_label, y_label,orientation, top, ascending, grouping, figsize, )
     # Check if the plot is created successfully
     assert plt.gca().has_data()
