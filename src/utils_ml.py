@@ -3,7 +3,9 @@ from nltk.stem.wordnet import WordNetLemmatizer
 from sklearn.feature_extraction.text import TfidfVectorizer, CountVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.decomposition import TruncatedSVD, LatentDirichletAllocation
+from wordcloud import WordCloud
 
+import matplotlib.pyplot as plt
 import string
 import pandas as pd
 
@@ -183,9 +185,48 @@ def categorize_headlines(headlines, tags):
 
     return categories
 
-def topic_modelling_tfidf(content, max_features=1000, max_df=0.5, n_components=10, n_iter=100, random_state=122):
+
+
+# def topic_modelling_tfidf(content, max_features=1000, max_df=0.5, n_components=10, n_iter=100, random_state=122):
+#     """
+#     Perform topic modeling using TF-IDF vectorization and truncated SVD.
+
+#     Parameters:
+#     content (list of str): The list of text documents to perform topic modeling on.
+#     max_features (int, optional): The maximum number of features to extract from the text data. Defaults to 1000.
+#     max_df (float, optional): The maximum document frequency for features to be considered. Defaults to 0.5.
+#     n_components (int, optional): The number of topics to extract. Defaults to 10.
+#     n_iter (int, optional): The number of iterations for the truncated SVD algorithm. Defaults to 100.
+#     random_state (int, optional): The random seed for reproducibility. Defaults to 122.
+
+#     Returns:
+#     dict: A dictionary where each key is a topic label (e.g. "Topic 0") and each value is a list of the top 7 terms associated with that topic.
+
+#     Notes:
+#     This function uses the TfidfVectorizer to convert the text data into a TF-IDF matrix, and then applies truncated SVD to reduce the dimensionality of the matrix and extract the topics.
+#     """
+#     topic_tfidf = TfidfVectorizer(max_features=max_features, max_df=max_df, smooth_idf=True)
+#     topic_vector = topic_tfidf.fit_transform(content)
+#     topic_vector_array = topic_vector.toarray()
+#     svd_model = TruncatedSVD(n_components=n_components, algorithm='randomized', n_iter=n_iter, random_state=random_state)
+#     svd_model.fit(topic_vector_array)
+#     topic_vector_array_reduced = svd_model.transform(topic_vector_array)
+
+#     terms = topic_tfidf.get_feature_names_out()
+#     topics = {}
+
+#     for i, comp in enumerate(svd_model.components_):
+#         terms_comp = zip(terms, comp)
+#         sorted_terms = sorted(terms_comp, key=lambda x: x[1], reverse=True)[:7]
+#         topics_list = []
+#         for t in sorted_terms:
+#             topics_list.append(t[0])
+#         topics["Topic " + str(i)] = topics_list
+#     return topics
+
+def extract_topic_vectors(content, max_features=1000, max_df=0.5, n_components=10, n_iter=100, random_state=122):
     """
-    Perform topic modeling using TF-IDF vectorization and truncated SVD.
+    Extract the reduced topic vectors using TF-IDF vectorization and truncated SVD.
 
     Parameters:
     content (list of str): The list of text documents to perform topic modeling on.
@@ -196,28 +237,40 @@ def topic_modelling_tfidf(content, max_features=1000, max_df=0.5, n_components=1
     random_state (int, optional): The random seed for reproducibility. Defaults to 122.
 
     Returns:
-    dict: A dictionary where each key is a topic label (e.g. "Topic 0") and each value is a list of the top 7 terms associated with that topic.
-
-    Notes:
-    This function uses the TfidfVectorizer to convert the text data into a TF-IDF matrix, and then applies truncated SVD to reduce the dimensionality of the matrix and extract the topics.
+    tuple: A tuple containing the reduced topic vector array and the feature names.
     """
     topic_tfidf = TfidfVectorizer(max_features=max_features, max_df=max_df, smooth_idf=True)
     topic_vector = topic_tfidf.fit_transform(content)
     topic_vector_array = topic_vector.toarray()
+
     svd_model = TruncatedSVD(n_components=n_components, algorithm='randomized', n_iter=n_iter, random_state=random_state)
     svd_model.fit(topic_vector_array)
     topic_vector_array_reduced = svd_model.transform(topic_vector_array)
 
     terms = topic_tfidf.get_feature_names_out()
-    topics = {}
+    
+    return topic_vector_array_reduced, svd_model, terms
 
+def topic_modelling_tfidf(svd_model, terms, n_components=10):
+    """
+    Complete the topic modeling process by extracting the top terms for each topic.
+
+    Parameters:
+    svd_model: The trained SVD model containing the components.
+    terms (list of str): The list of feature names (terms).
+    n_components (int, optional): The number of topics to extract. Defaults to 10.
+
+    Returns:
+    dict: A dictionary where each key is a topic label (e.g., "Topic 0") and each value is a list of the top 7 terms associated with that topic.
+    """
+    topics = {}
+    
     for i, comp in enumerate(svd_model.components_):
         terms_comp = zip(terms, comp)
         sorted_terms = sorted(terms_comp, key=lambda x: x[1], reverse=True)[:7]
-        topics_list = []
-        for t in sorted_terms:
-            topics_list.append(t[0])
+        topics_list = [t[0] for t in sorted_terms]
         topics["Topic " + str(i)] = topics_list
+
     return topics
 
 def topic_modelling_lda(data, num_topics, min_df=10, token_pattern='[a-zA-Z0-9]{3,}', max_features=50000, max_iter=10, batch_size=128):
@@ -253,3 +306,20 @@ def topic_modelling_lda(data, num_topics, min_df=10, token_pattern='[a-zA-Z0-9]{
         output[f"Topic {index}"] = [vectorizer.get_feature_names_out()[i] for i in topic.argsort()[-10:]]
     return lda_model, lda_output,vectorizer, output
 
+def plot_word_cloud(topics,num_cols=2):
+# Plotting the word clouds for each topic
+    n_topics = len(topics)
+    rows = (n_topics + num_cols - 1) // num_cols  # Calculate the number of rows needed
+
+    fig, axes = plt.subplots(rows, num_cols, figsize=(15, 5 * rows))
+
+    for i, (topic_idx, word_freq) in enumerate(topics.items()):
+        row = i // num_cols
+        col = i % num_cols
+        wordcloud = WordCloud(width=800, height=400, background_color='white').generate_from_frequencies(word_freq)
+        
+        axes[row, col].imshow(wordcloud, interpolation="bilinear")
+        axes[row, col].axis("off")
+        axes[row, col].set_title(f"Topic #{topic_idx}")
+    fig.savefig('word_cloud.png')
+        
