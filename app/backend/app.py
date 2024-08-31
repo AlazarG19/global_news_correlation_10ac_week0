@@ -19,11 +19,11 @@ CORS(app)
 
 # Load environment variables from .env file
 load_dotenv()
-
 try:
     instance = psycopg2.connect(
         host=os.environ['DB_HOST'],
         database=os.environ['DB_DATABASE'],
+        port=os.environ['DB_PORT'],
         user=os.environ['DB_USERNAME'],
         password=os.environ['DB_PASSWORD']
     )
@@ -35,33 +35,33 @@ def execute_query( query):
     cur.execute(query)
     return cur,cur.fetchall()    
 
-# start_time = time.time()
+start_time = time.time()
 
 cur,results = execute_query("SELECT domain,source_name,article_id, mentioned_countries,title_sentiment,content_based_region,title_length from rating")
 column_names = [desc[0] for desc in cur.description]
 rating = pd.DataFrame(results, columns=column_names)
 
-# print(f"Time taken to execute query and create rating DataFrame: {time.time() - start_time:.2f} seconds")
+print(f"Time taken to execute query and create rating DataFrame: {time.time() - start_time:.2f} seconds")
 
 # print("rating.head()")
 print(rating.columns)
 # print(rating.count())
 
-# start_time = time.time()
+start_time = time.time()
 cur,results = execute_query("SELECT * from domains_location")
 column_names = [desc[0] for desc in cur.description]
 domains_location = pd.DataFrame(results, columns=column_names)
-# print(f"Time taken to execute query and create domains_location DataFrame: {time.time() - start_time:.2f} seconds")
+print(f"Time taken to execute query and create domains_location DataFrame: {time.time() - start_time:.2f} seconds")
 
 
 # print("domains_location.head()")
 print(domains_location.columns)
 
-# start_time = time.time()
+start_time = time.time()
 cur,results = execute_query("SELECT * from traffic")
 column_names = [desc[0] for desc in cur.description]
 traffic = pd.DataFrame(results, columns=column_names)
-# print(f"Time taken to execute query and create trafficdate DataFrame: {time.time() - start_time:.2f} seconds")
+print(f"Time taken to execute query and create trafficdate DataFrame: {time.time() - start_time:.2f} seconds")
 
 
 # print("traffic.head()")
@@ -165,13 +165,7 @@ sorted_dict_top = [{"country": country, "count": count} for country, count in me
 # Create histogram data
 counts, bin_edges = np.histogram(rating['title_length'], bins=10)
 
-# Prepare data in the desired format
-histogram_data = [
-    {"count": count, "item": bin_edges[i]}
-    for i, count in enumerate(counts)
-]
-histogram_data.append({"count": counts[-1], "item": bin_edges[-1]})
-print('/titlehisto',histogram_data)
+
 @app.route('/', methods=['GET'])
 def index():
     return "dfsdfs"
