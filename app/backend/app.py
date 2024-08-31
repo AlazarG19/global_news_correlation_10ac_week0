@@ -142,32 +142,11 @@ rating_and_traffic_df = pd.merge(rating,traffic,on="domain",how="inner")
 grouped_rating_traffic = rating_and_traffic_df.groupby("domain")["RefIPs"].count().reset_index(name='count_of_visitors')
 grouped_rating_traffic = grouped_rating_traffic.sort_values(by=['count_of_visitors'], ascending=[False])
     
-# print('/getoverviewcardvalues',overview_result)
-
-# print('/getcountryarticletopcountdata', get_barchartdata_with_grouping(df=rating,x_axis="source_name",y_axis="article_id",
-#                                                ascending=False ))
-
-# print('/gettitlesentimentcomposition',get_piechartdata(rating,"title_sentiment","domain"))
-
-# print('/getrating',rating.head().to_dict(orient="records"))
-# print('/getcountryarticletopcountdata', get_barchartdata_with_grouping(df=rating,x_axis="source_name",y_axis="article_id",
-#                                                ascending=False ))
-# print('/getcountryarticlebottomcountdata',get_barchartdata_with_grouping(df=rating,x_axis="source_name",y_axis="article_id",
-#                                                ascending=True ))
-# short_grouped_rating_traffic_top = grouped_rating_traffic.head() 
-# print('/getwebsitevisitortopcountdata', short_grouped_rating_traffic_top.to_dict(orient="records"))
-# short_grouped_rating_traffic_bottom = grouped_rating_traffic.tail() 
-# print('/getwebsitevisitorbottomcountdata', short_grouped_rating_traffic_bottom.to_dict(orient="records"))
-# results=traffic.sort_values(by=['GlobalRank'], ascending=[True]).head(10)
-# print('/getsortedtraffic',results.to_dict(orient="records"))
 
 # Countries with the highest and lowest number of news media organisations
 rating_and_domain_df = pd.merge(rating,domains_location,on="domain",how="inner")
 country_news_media = rating_and_domain_df[["source_name","Country"]]
 country_news_media.drop_duplicates(inplace=True)
-
-# print('/getcountrymediatopcountdata',get_barchartdata_with_grouping(df=country_news_media,x_axis="Country",y_axis= "Count", ascending=False, grouping='source_name' ))
-# print('/getcountrymediabottomcountdata',get_barchartdata_with_grouping(df=country_news_media,x_axis="Country",y_axis= "Count", ascending=True, grouping='source_name' ))
 
 mentioned_countries = rating["mentioned_countries"].dropna()
 mentions = {}
@@ -182,12 +161,6 @@ mention_sorted_items = sorted(mentions.items(), key=lambda item: item[1])
 content_based_region_filtered_rating = rating[rating["content_based_region"] != "other"]
 
 sorted_dict_top = [{"country": country, "count": count} for country, count in mention_sorted_items[-5:]]
-
-print('/getcontentcountrymentiontopcountdata',sorted_dict_top)
-sorted_dict_bottom = [{"country": country, "count": count} for country, count in mention_sorted_items[:5]]
-print('/getcontentcountrymentiontopcountdata',sorted_dict_bottom)
-print('/getcontentregionmentioncountdata',get_barchartdata_with_grouping(df=content_based_region_filtered_rating,x_axis= "content_based_region", y_axis="Count",  ascending=False, grouping='source_name'))
-
 
 # Append the last bin edge with zero count if needed
 histogram_data.append({"count": counts[-1], "item": bin_edges[-1]})
