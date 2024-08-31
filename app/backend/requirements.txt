@@ -1,0 +1,5 @@
+pandas
+numpy
+dotenv
+flask
+flask_cors
