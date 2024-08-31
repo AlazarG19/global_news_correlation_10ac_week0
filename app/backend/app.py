@@ -162,7 +162,14 @@ content_based_region_filtered_rating = rating[rating["content_based_region"] != 
 
 sorted_dict_top = [{"country": country, "count": count} for country, count in mention_sorted_items[-5:]]
 
-# Append the last bin edge with zero count if needed
+# Create histogram data
+counts, bin_edges = np.histogram(rating['title_length'], bins=10)
+
+# Prepare data in the desired format
+histogram_data = [
+    {"count": count, "item": bin_edges[i]}
+    for i, count in enumerate(counts)
+]
 histogram_data.append({"count": counts[-1], "item": bin_edges[-1]})
 print('/titlehisto',histogram_data)
 @app.route('/', methods=['GET'])
