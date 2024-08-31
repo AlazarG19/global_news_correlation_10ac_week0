@@ -185,45 +185,6 @@ def categorize_headlines(headlines, tags):
 
     return categories
 
-
-
-# def topic_modelling_tfidf(content, max_features=1000, max_df=0.5, n_components=10, n_iter=100, random_state=122):
-#     """
-#     Perform topic modeling using TF-IDF vectorization and truncated SVD.
-
-#     Parameters:
-#     content (list of str): The list of text documents to perform topic modeling on.
-#     max_features (int, optional): The maximum number of features to extract from the text data. Defaults to 1000.
-#     max_df (float, optional): The maximum document frequency for features to be considered. Defaults to 0.5.
-#     n_components (int, optional): The number of topics to extract. Defaults to 10.
-#     n_iter (int, optional): The number of iterations for the truncated SVD algorithm. Defaults to 100.
-#     random_state (int, optional): The random seed for reproducibility. Defaults to 122.
-
-#     Returns:
-#     dict: A dictionary where each key is a topic label (e.g. "Topic 0") and each value is a list of the top 7 terms associated with that topic.
-
-#     Notes:
-#     This function uses the TfidfVectorizer to convert the text data into a TF-IDF matrix, and then applies truncated SVD to reduce the dimensionality of the matrix and extract the topics.
-#     """
-#     topic_tfidf = TfidfVectorizer(max_features=max_features, max_df=max_df, smooth_idf=True)
-#     topic_vector = topic_tfidf.fit_transform(content)
-#     topic_vector_array = topic_vector.toarray()
-#     svd_model = TruncatedSVD(n_components=n_components, algorithm='randomized', n_iter=n_iter, random_state=random_state)
-#     svd_model.fit(topic_vector_array)
-#     topic_vector_array_reduced = svd_model.transform(topic_vector_array)
-
-#     terms = topic_tfidf.get_feature_names_out()
-#     topics = {}
-
-#     for i, comp in enumerate(svd_model.components_):
-#         terms_comp = zip(terms, comp)
-#         sorted_terms = sorted(terms_comp, key=lambda x: x[1], reverse=True)[:7]
-#         topics_list = []
-#         for t in sorted_terms:
-#             topics_list.append(t[0])
-#         topics["Topic " + str(i)] = topics_list
-#     return topics
-
 def extract_topic_vectors(content, max_features=1000, max_df=0.5, n_components=10, n_iter=100, random_state=122):
     """
     Extract the reduced topic vectors using TF-IDF vectorization and truncated SVD.
