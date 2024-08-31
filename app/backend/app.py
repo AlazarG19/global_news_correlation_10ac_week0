@@ -5,6 +5,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 
 import time
 import pandas as pd
+import numpy as np
 import re
 import psycopg2
 from dotenv import load_dotenv
@@ -36,7 +37,7 @@ def execute_query( query):
 
 # start_time = time.time()
 
-cur,results = execute_query("SELECT domain,source_name,article_id, mentioned_countries,title_sentiment from rating")
+cur,results = execute_query("SELECT domain,source_name,article_id, mentioned_countries,title_sentiment,content_based_region,title_length from rating")
 column_names = [desc[0] for desc in cur.description]
 rating = pd.DataFrame(results, columns=column_names)
 
@@ -57,7 +58,7 @@ domains_location = pd.DataFrame(results, columns=column_names)
 print(domains_location.columns)
 
 # start_time = time.time()
-cur,results = execute_query("SELECT \"GlobalRank\", \"domain\" from traffic")
+cur,results = execute_query("SELECT * from traffic")
 column_names = [desc[0] for desc in cur.description]
 traffic = pd.DataFrame(results, columns=column_names)
 # print(f"Time taken to execute query and create trafficdate DataFrame: {time.time() - start_time:.2f} seconds")
@@ -82,6 +83,23 @@ def get_barchartdata_with_grouping(df, x_axis, y_axis, top=10, ascending=True, g
         sorted_df = grouped.sort_values(by="Count",ascending=ascending)
         
         json_format = {"x_axis":sorted_df[x_axis][:top].tolist(), "y_axis":sorted_df[y_axis][:top].tolist()}
+    returnable_data = []
+    for i in range(len(json_format["x_axis"])):
+        returnable_data.append({"x_axis":json_format["x_axis"][i],"y_axis":json_format["y_axis"][i]})
+    data = {"data":returnable_data}
+    
+    return data
+def get_barchartdata(df, x_axis, y_axis, top=10, ascending=True, grouping=""):
+    ''' 
+    a function to attain the barchart for dataframes that need to 
+    be grouped before plotting
+    '''
+    data = {}
+    if ascending:
+        sorted_df = df.tail() 
+    else:
+        sorted_df = df.head() 
+    json_format = {"x_axis":sorted_df[x_axis].tolist(), "y_axis":sorted_df[y_axis].tolist()}
     returnable_data = []
     for i in range(len(json_format["x_axis"])):
         returnable_data.append({"x_axis":json_format["x_axis"][i],"y_axis":json_format["y_axis"][i]})
@@ -118,12 +136,62 @@ def get_piechartdata(df,label,count_label):
 datafram_dict = {"rating":rating,"domains_location":domains_location,"traffic":traffic}
 overview_result = count_items_in_dataframes(datafram_dict)
 overview_result["new_features"] = 5
-print("number of traffic,domain ",overview_result)
-article_count_data = get_barchartdata_with_grouping(df=rating,x_axis="source_name",y_axis="article_id",
-                                               ascending=False )
-print("article count data",article_count_data)
-print("piechartdata",get_piechartdata(rating,"title_sentiment","domain"))
 
+
+rating_and_traffic_df = pd.merge(rating,traffic,on="domain",how="inner")
+grouped_rating_traffic = rating_and_traffic_df.groupby("domain")["RefIPs"].count().reset_index(name='count_of_visitors')
+grouped_rating_traffic = grouped_rating_traffic.sort_values(by=['count_of_visitors'], ascending=[False])
+    
+# print('/getoverviewcardvalues',overview_result)
+
+# print('/getcountryarticletopcountdata', get_barchartdata_with_grouping(df=rating,x_axis="source_name",y_axis="article_id",
+#                                                ascending=False ))
+
+# print('/gettitlesentimentcomposition',get_piechartdata(rating,"title_sentiment","domain"))
+
+# print('/getrating',rating.head().to_dict(orient="records"))
+# print('/getcountryarticletopcountdata', get_barchartdata_with_grouping(df=rating,x_axis="source_name",y_axis="article_id",
+#                                                ascending=False ))
+# print('/getcountryarticlebottomcountdata',get_barchartdata_with_grouping(df=rating,x_axis="source_name",y_axis="article_id",
+#                                                ascending=True ))
+# short_grouped_rating_traffic_top = grouped_rating_traffic.head() 
+# print('/getwebsitevisitortopcountdata', short_grouped_rating_traffic_top.to_dict(orient="records"))
+# short_grouped_rating_traffic_bottom = grouped_rating_traffic.tail() 
+# print('/getwebsitevisitorbottomcountdata', short_grouped_rating_traffic_bottom.to_dict(orient="records"))
+# results=traffic.sort_values(by=['GlobalRank'], ascending=[True]).head(10)
+# print('/getsortedtraffic',results.to_dict(orient="records"))
+
+# Countries with the highest and lowest number of news media organisations
+rating_and_domain_df = pd.merge(rating,domains_location,on="domain",how="inner")
+country_news_media = rating_and_domain_df[["source_name","Country"]]
+country_news_media.drop_duplicates(inplace=True)
+
+# print('/getcountrymediatopcountdata',get_barchartdata_with_grouping(df=country_news_media,x_axis="Country",y_axis= "Count", ascending=False, grouping='source_name' ))
+# print('/getcountrymediabottomcountdata',get_barchartdata_with_grouping(df=country_news_media,x_axis="Country",y_axis= "Count", ascending=True, grouping='source_name' ))
+
+mentioned_countries = rating["mentioned_countries"].dropna()
+mentions = {}
+for countries in mentioned_countries:
+    for country in countries.split(","):
+        if country in mentions:
+            mentions[country] +=1
+        else:
+            mentions[country] = 1
+mention_sorted_items = sorted(mentions.items(), key=lambda item: item[1])
+
+content_based_region_filtered_rating = rating[rating["content_based_region"] != "other"]
+
+sorted_dict_top = [{"country": country, "count": count} for country, count in mention_sorted_items[-5:]]
+
+print('/getcontentcountrymentiontopcountdata',sorted_dict_top)
+sorted_dict_bottom = [{"country": country, "count": count} for country, count in mention_sorted_items[:5]]
+print('/getcontentcountrymentiontopcountdata',sorted_dict_bottom)
+print('/getcontentregionmentioncountdata',get_barchartdata_with_grouping(df=content_based_region_filtered_rating,x_axis= "content_based_region", y_axis="Count",  ascending=False, grouping='source_name'))
+
+
+# Append the last bin edge with zero count if needed
+histogram_data.append({"count": counts[-1], "item": bin_edges[-1]})
+print('/titlehisto',histogram_data)
 @app.route('/', methods=['GET'])
 def index():
     return "dfsdfs"
@@ -132,18 +200,77 @@ def index():
 def get_overview_card_values():
     return jsonify(overview_result)
 
-@app.route('/getarticlecountdata', methods=['GET'])
-def get_article_count_data():
-    return jsonify(article_count_data)
+@app.route('/getcountryarticletopcountdata', methods=['GET'])
+def get_country_article_top_count_data():
+    return jsonify(get_barchartdata_with_grouping(df=rating,x_axis="source_name",y_axis="article_id",
+                                               ascending=False ))
 
 @app.route('/gettitlesentimentcomposition', methods=['GET'])
 def get_title_sentiment_composition():
     return jsonify(get_piechartdata(rating,"title_sentiment","domain"))
 
+
 @app.route('/getrating', methods=['GET'])
 def get_rating():
     return jsonify(rating.to_dict(orient="records"))
+# ----------quantitative website-------------
 
+
+@app.route('/getcountryarticlebottomcountdata', methods=['GET'])
+def get_country_article_bottom_count_data():
+    return jsonify(get_barchartdata_with_grouping(df=rating,x_axis="source_name",y_axis="article_id",
+                                               ascending=True ))
+
+@app.route('/getwebsitevisitortopcountdata', methods=['GET'])
+def get_website_visitor_top_count_data():
+    short_grouped_rating_traffic_top = grouped_rating_traffic.head() 
+    return jsonify(short_grouped_rating_traffic_top.to_dict(orient="records"))
+
+
+@app.route('/getwebsitevisitorbottomcountdata', methods=['GET'])
+def get_website_visitor_bottom_count_data(): 
+    short_grouped_rating_traffic_bottom = grouped_rating_traffic.tail() 
+    return jsonify(short_grouped_rating_traffic_bottom.to_dict(orient="records"))
+
+
+@app.route('/getsortedtraffic', methods=['GET'])
+def get_sorted_traffic():
+    results=traffic.sort_values(by=['GlobalRank'], ascending=[True]).head(10)
+    return jsonify(results.to_dict(orient="records"))
+# ---------------------quantity country----------------
+
+
+@app.route('/getcountrymediatopcountdata', methods=['GET'])
+def get_country_media_top_count_data():
+    return jsonify(get_barchartdata_with_grouping(df=country_news_media,x_axis="Country",y_axis= "Count", ascending=False, grouping='source_name' ))
+
+
+@app.route('/getcountrymediabottomcountdata', methods=['GET'])
+def get_country_media_bottom_count_data():
+    return jsonify(get_barchartdata_with_grouping(df=country_news_media,x_axis="Country",y_axis= "Count", ascending=True, grouping='source_name' ))
+# ------------ based on content------------
+
+
+@app.route('/getcontentcountrymentiontopcountdata', methods=['GET'])
+def get_content_country_mention_top_count_data():
+    sorted_dict_top = [{"country": country, "count": count} for country, count in mention_sorted_items[-5:]]
+    return jsonify(sorted_dict_top)
+
+
+@app.route('/getcontentcountrymentionbottomcountdata', methods=['GET'])
+def get_content_country_mention_bottom_count_data():
+    sorted_dict_bottom = [{"country": country, "count": count} for country, count in mention_sorted_items[:5]]
+    return jsonify(sorted_dict_bottom)
+
+
+@app.route('/getcontentregionmentioncountdata', methods=['GET'])
+def get_title_length_frequency_data():
+    return jsonify(get_barchartdata_with_grouping(df=content_based_region_filtered_rating,x_axis= "content_based_region", y_axis="Count",  ascending=False, grouping='source_name'))
+
+
+@app.route('/getcontentregionmentioncountdata', methods=['GET'])
+def get_content_region_mention_count_data():
+    return jsonify(get_barchartdata_with_grouping(df=content_based_region_filtered_rating,x_axis= "content_based_region", y_axis="Count",  ascending=False, grouping='source_name'))
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
+    app.run(host='0.0.0.0', port=7000)
