@@ -11,9 +11,9 @@ from dotenv import load_dotenv
 import os
 from flask import Flask, jsonify
 from flask_cors import CORS
-app = Flask(__name__)
+application = Flask(__name__)
 import psycopg2
-CORS(app)
+CORS(application)
 
 # # Load environment variables from .env file
 load_dotenv()
@@ -151,85 +151,85 @@ content_based_region_filtered_rating = rating[rating["content_based_region"] != 
 
 sorted_dict_top = [{"country": country, "count": count} for country, count in mention_sorted_items[-5:]]
 
-@app.route('/', methods=['GET'])
+@application.route('/', methods=['GET'])
 def index():
     return "dfsdfs"
 
-@app.route('/getoverviewcardvalues', methods=['GET'])
+@application.route('/getoverviewcardvalues', methods=['GET'])
 def get_overview_card_values():
     return jsonify(overview_result)
 
-@app.route('/getcountryarticletopcountdata', methods=['GET'])
+@application.route('/getcountryarticletopcountdata', methods=['GET'])
 def get_country_article_top_count_data():
     return jsonify(get_barchartdata_with_grouping(df=rating,x_axis="source_name",y_axis="article_id",
                                                ascending=False ))
 
-@app.route('/gettitlesentimentcomposition', methods=['GET'])
+@application.route('/gettitlesentimentcomposition', methods=['GET'])
 def get_title_sentiment_composition():
     return jsonify(get_piechartdata(rating,"title_sentiment","domain"))
 
 
-@app.route('/getrating', methods=['GET'])
+@application.route('/getrating', methods=['GET'])
 def get_rating():
     return jsonify(rating.to_dict(orient="records"))
 # ----------quantitative website-------------
 
 
-@app.route('/getcountryarticlebottomcountdata', methods=['GET'])
+@application.route('/getcountryarticlebottomcountdata', methods=['GET'])
 def get_country_article_bottom_count_data():
     return jsonify(get_barchartdata_with_grouping(df=rating,x_axis="source_name",y_axis="article_id",
                                                ascending=True ))
 
-@app.route('/getwebsitevisitortopcountdata', methods=['GET'])
+@application.route('/getwebsitevisitortopcountdata', methods=['GET'])
 def get_website_visitor_top_count_data():
     short_grouped_rating_traffic_top = grouped_rating_traffic.head() 
     return jsonify(short_grouped_rating_traffic_top.to_dict(orient="records"))
 
 
-@app.route('/getwebsitevisitorbottomcountdata', methods=['GET'])
+@application.route('/getwebsitevisitorbottomcountdata', methods=['GET'])
 def get_website_visitor_bottom_count_data(): 
     short_grouped_rating_traffic_bottom = grouped_rating_traffic.tail() 
     return jsonify(short_grouped_rating_traffic_bottom.to_dict(orient="records"))
 
 
-@app.route('/getsortedtraffic', methods=['GET'])
+@application.route('/getsortedtraffic', methods=['GET'])
 def get_sorted_traffic():
     results=traffic.sort_values(by=['GlobalRank'], ascending=[True]).head(10)
     return jsonify(results.to_dict(orient="records"))
 # ---------------------quantity country----------------
 
 
-@app.route('/getcountrymediatopcountdata', methods=['GET'])
+@application.route('/getcountrymediatopcountdata', methods=['GET'])
 def get_country_media_top_count_data():
     return jsonify(get_barchartdata_with_grouping(df=country_news_media,x_axis="Country",y_axis= "Count", ascending=False, grouping='source_name' ))
 
 
-@app.route('/getcountrymediabottomcountdata', methods=['GET'])
+@application.route('/getcountrymediabottomcountdata', methods=['GET'])
 def get_country_media_bottom_count_data():
     return jsonify(get_barchartdata_with_grouping(df=country_news_media,x_axis="Country",y_axis= "Count", ascending=True, grouping='source_name' ))
 # ------------ based on content------------
 
 
-@app.route('/getcontentcountrymentiontopcountdata', methods=['GET'])
+@application.route('/getcontentcountrymentiontopcountdata', methods=['GET'])
 def get_content_country_mention_top_count_data():
     sorted_dict_top = [{"country": country, "count": count} for country, count in mention_sorted_items[-5:]]
     return jsonify(sorted_dict_top)
 
 
-@app.route('/getcontentcountrymentionbottomcountdata', methods=['GET'])
+@application.route('/getcontentcountrymentionbottomcountdata', methods=['GET'])
 def get_content_country_mention_bottom_count_data():
     sorted_dict_bottom = [{"country": country, "count": count} for country, count in mention_sorted_items[:5]]
     return jsonify(sorted_dict_bottom)
 
 
-@app.route('/getcontentregionmentioncountdata', methods=['GET'])
+@application.route('/getcontentregionmentioncountdata', methods=['GET'])
 def get_title_length_frequency_data():
     return jsonify(get_barchartdata_with_grouping(df=content_based_region_filtered_rating,x_axis= "content_based_region", y_axis="Count",  ascending=False, grouping='source_name'))
 
 
-@app.route('/getcontentregionmentioncountdata', methods=['GET'])
+@application.route('/getcontentregionmentioncountdata', methods=['GET'])
 def get_content_region_mention_count_data():
     return jsonify(get_barchartdata_with_grouping(df=content_based_region_filtered_rating,x_axis= "content_based_region", y_axis="Count",  ascending=False, grouping='source_name'))
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=7000)
+    application.run(host='0.0.0.0', port=7000)
