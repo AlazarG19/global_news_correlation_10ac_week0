@@ -30,7 +30,7 @@
 
 - **Countries with Many Articles Written About Them:**
   - The content of the news is about that country
-![Top](../../../images/7.png "Top")
+![Top](../../images/7.png "Top")
 
 - **Reporting About Specific Regions:**
   - Africa
