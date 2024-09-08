@@ -25,7 +25,7 @@ const OverviewPage = () => {
 	async function fetchAndCombineData(urls) {
 		try {
 			// Use Promise.all to send requests to all URLs simultaneously
-			const responses = await Promise.all(urls.map(url => fetch(url)));
+			const responses = await Promise.all(urls.map(url => fetch(url, { mode: 'cors' })));
 
 			// Wait for all responses to resolve to JSON
 			const data = await Promise.all(responses.map(response => response.json()));
