@@ -1,12 +1,15 @@
 # Global Media News Analysis
+
 ## Overview
-This project aims to analyze the news articles from various sources to understand the global media landscape. The analysis 
-will focus on the sentiment, topics, and entities mentioned in the articles. 
+![Intro](/front.avif "Intro Photo")
+
+This project aims to analyze news articles from various sources to understand the global media landscape. The analysis focuses on sentiment, topics, and entities mentioned in the articles.
+
+## Objective
+The objective of the project is to analyze and understand how sentiment and topics are correlated across different global media agencies and check for biases that may influence the reports. By accomplishing this objective, the outcome is to develop models that classify headlines into specific categories, perform sentiment and topic analysis, and generate insights about reporting trends across media outlets.
 
 ## Main Focus
-The Main focus of this project is to conduct a comprehensive Exploratory Data analysis and advanced analysis of
-global news data. 
-The key objectives include 
+The main focus of this project is to conduct comprehensive exploratory data analysis and advanced analysis of global news data. The key objectives include:
 
 - Quantitative Analysis
 - Keyword and Topic Analysis
@@ -15,70 +18,38 @@ The key objectives include
 - Model Building and Versioning
 - Dashboard Design and Deployment
 
+## Deliverables
+The main deliverables for this project include:
+
+- **Reports**: Detailed analysis reports on sentiment, topic distribution, and reporting patterns.
+- **Machine Learning Models**: Models for headline classification, sentiment analysis, and topic modeling.
+- **Dashboards**: A Streamlit-based dashboard or a web application using React as a frontend and Flask as a backend.
+
+## Tools and Techniques
+The various tools used in the project include:
+
+- Python
+- Git
+- GitHub
+- PostgreSQL
+- Streamlit or React and Flask
+- Docker
+- AWS
+
 ## Table of Contents
 
 - [Installation](#installation)
-  - [Creating a Virtual Environment](#virtual-env)
-  - [Clone this package](#clone)
+  - [Clone this Package](#clone-this-package)
+- [Data Loading](#data-loading)
+- [Utilities](#utilities)
+- [Testing](#testing)
+- [Documentation](#documentation)
+- [Notebooks](#notebooks)
+- [Additional Insights](#additional-insights)
 
 ## Installation
 
-### Creating a Virtual Environment
-
-#### Using Conda
-
-If you prefer Conda as your package manager:
-
-1. Open your terminal or command prompt.
-
-2. Navigate to your project directory.
-
-3. Run the following command to create a new Conda environment:
-
-    ```bash
-    conda create --name your_env_name python=3.12
-    ```
-    Replace `your_env_name` with the desired name for your environment e.g. global_media_news_analysis and `3.12` with your preferred Python version.
-
-4. Activate the environment:
-
-    ```bash
-    conda activate your_env_name
-    ```
-
-#### Using Virtualenv
-
-If you prefer using `venv`, Python's built-in virtual environment module:
-
-1. Open your terminal or command prompt.
-
-2. Navigate to your project directory.
-
-3. Run the following command to create a new virtual environment:
-
-    ```bash
-    python -m venv your_env_name
-    ```
-
-    Replace `your_env_name` with the desired name for your environment.
-
-4. Activate the environment:
-
-    - On Windows:
-
-    ```bash
-    .\your_env_name\scripts\activate
-    ```
-
-    - On macOS/Linux:
-
-    ```bash
-    source your_env_name/bin/activate
-    ```
-
-Now, your virtual environment is created and activated. You can install packages and run your Python scripts within this isolated environment. Don't forget to install required packages using `pip` or `conda` once the environment is activated.
-
-### Clone this package
+### Clone this Package
 
 To install the `global_media_news_analysis` package, follow these steps:
 
@@ -90,9 +61,38 @@ To install the `global_media_news_analysis` package, follow these steps:
     ```bash
     cd global_media_news_analysis
     ```
- 
 3. Install the required dependencies:
     ```bash
     pip install -r requirements.txt
     ```
 
+## Data Loading
+
+The package provides a data loader module (`loader.py`) in the `src` directory. Use this module to load your network data into a format suitable for analysis.
+
+**Example:**
+
+```python
+from src.loader import DataLoader
+
+path = {
+    "rating":"path to rating"}
+
+# initiating the newsdataloader class
+data_loader = NewsDataLoader(path)
+
+# Load data from a Slack channel
+rating = data_loader.get_data("rating")
+
+## Utilities  
+Explore the various utilities available in the `src/utils.py` module. This module contains functions for common tasks such as data cleaning, preprocessing, and analysis.
+
+
+## Notebooks
+The notebooks directory contains Jupyter notebooks that demonstrate specific use cases and analyses.
+
+EDA: Exploratory Data Analysis notebooks
+Model: Model building and evaluation notebooks
+
+## Additional Insights
+For insights into each file and folder, refer to the documentation and examples provided within each directory. The README files in the notebooks/eda and notebooks/model folders provide details on the specific analyses and models.
