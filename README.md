@@ -83,6 +83,7 @@ data_loader = NewsDataLoader(path)
 
 # Load data from a Slack channel
 rating = data_loader.get_data("rating")
+```
 
 ## Utilities  
 Explore the various utilities available in the `src/utils.py` module. This module contains functions for common tasks such as data cleaning, preprocessing, and analysis.
