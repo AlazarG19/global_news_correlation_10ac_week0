@@ -15,22 +15,22 @@
 
  - **Top and Bottom 10:**
   - Top 10 websites with the largest count of news articles
-![Top](/Images/2.png "Top")
+![Top](../Images/2.png "Top")
   - Bottom 10 websites with the largest count of news articles
-![Bottom](/Images/3.png "Bottom")
+![Bottom](../Images/3.png "Bottom")
 
 - **Websites with the Highest Numbers of Visitors Traffic**
-![Top](/Images/4.png "Top")
+![Top](../Images/4.png "Top")
 - **Websites with the Lowest Numbers of Visitors Traffic**
-![Bottom](/Images/5.png "Bottom")
+![Bottom](../Images/5.png "Bottom")
 
 - **Countries with the Highest Number of News Media Organisations:**
   - Represented by domains in the data
-![Top](/Images/6.png "Top")
+![Top](../Images/6.png "Top")
 
 - **Countries with Many Articles Written About Them:**
   - The content of the news is about that country
-![Top](/Images/7.png "Top")
+![Top](../Images/7.png "Top")
 
 - **Reporting About Specific Regions:**
   - Africa
@@ -41,17 +41,17 @@
   - Ukraine
   - Middle East
     - Note: Group countries to form the African, EU, and Middle East continents/regions
-![Top](/Images/11.png "Top")
+![Top](../Images/11.png "Top")
 
 - **Sentiment Analysis by Website:**
-![Top](/Images/12.png "Top")
-![Top](/Images/13.png "Top")
+![Top](../Images/12.png "Top")
+![Top](../Images/13.png "Top")
 - **Compare Content Metadata Across Sites:**
   - Similarity in raw message lengths across sites
     - Check distribution among sites
-![Top](/Images/14.png "Top")
+![Top](../Images/14.png "Top")
   - Similarity in raw content lengths across sites
     - Check distribution among sites
-![Top](/Images/15.png "Top")
+![Top](../Images/15.png "Top")
 
  
