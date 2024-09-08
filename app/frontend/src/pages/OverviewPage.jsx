@@ -11,10 +11,11 @@ import TrafficsTable from "../components/quantiativewebsite/TrafficTable";
 import TitleSentimentDistributionChart from "../components/overview/TitleSentimentDistributionChart";
 import CountriesArticleChartChart from "../components/overview/CountriesArticleChart";
 import { useEffect, useState } from "react";
+import Loading from "../components/Loading";
 
 const OverviewPage = () => {
 	const [overviewData, setOverviewData] = useState({})
-	console.log(import.meta.env)
+	const [loading, setLoading] = useState({})
 	let urls = [
 		`${import.meta.env.VITE_BACKEND_URL}/getoverviewcardvalues`,
 		`${import.meta.env.VITE_BACKEND_URL}/getcountryarticletopcountdata`,
@@ -35,7 +36,6 @@ const OverviewPage = () => {
 				acc[lastSubPath] = data[index];
 				return acc;
 			}, {});
-			console.log(combinedData)
 			return combinedData;
 		} catch (error) {
 			console.error('Error fetching data:', error);
@@ -48,6 +48,7 @@ const OverviewPage = () => {
 		fetchAndCombineData(urls)
 			.then(combinedData => {
 				setOverviewData(combinedData)
+				setLoading(false)
 			});
 
 	}, [])
@@ -64,22 +65,32 @@ const OverviewPage = () => {
 					animate={{ opacity: 1, y: 0 }}
 					transition={{ duration: 1 }}
 				>
-					<StatCard name='Number of Domains' icon={Zap} value={Object.keys(overviewData).length != 0 ? overviewData["getoverviewcardvalues"]["domains_location"] : 0} color='#6366F1' />
-					<StatCard name='Number of Rating Data' icon={Users} value={Object.keys(overviewData).length != 0 ? overviewData["getoverviewcardvalues"]["rating"] : 0} color='#8B5CF6' />
-					<StatCard name='Number of Traffic Data' icon={ShoppingBag} value={Object.keys(overviewData).length != 0 ? overviewData["getoverviewcardvalues"]["traffic"] : 0} color='#EC4899' />
-					<StatCard name='Number of Newly Created Features' icon={BarChart2} value={Object.keys(overviewData).length != 0 ? overviewData["getoverviewcardvalues"]["new_features"] : 0} color='#10B981' />
+					{loading ? <Loading /> : <StatCard name='Number of Domains' icon={Zap} value={Object.keys(overviewData).length != 0 ? overviewData["getoverviewcardvalues"]["domains_location"] : 0} color='#6366F1' />}
+					{loading ? <Loading /> : <StatCard name='Number of Rating Data' icon={Users} value={Object.keys(overviewData).length != 0 ? overviewData["getoverviewcardvalues"]["rating"] : 0} color='#8B5CF6' />}
+					{loading ? <Loading /> : <StatCard name='Number of Traffic Data' icon={ShoppingBag} value={Object.keys(overviewData).length != 0 ? overviewData["getoverviewcardvalues"]["traffic"] : 0} color='#EC4899' />}
+					{loading ? <Loading /> : <StatCard name='Number of Newly Created Features' icon={BarChart2} value={Object.keys(overviewData).length != 0 ? overviewData["getoverviewcardvalues"]["new_features"] : 0} color='#10B981' />}
+
+
+
+
 				</motion.div>
 
 				{/* CHARTS */}
 
 				<div className='grid grid-cols-1 lg:grid-cols-2  gap-8'>
 					{/* <SalesOverviewChart /> */}
-					<TitleSentimentDistributionChart titlesentimentdata={Object.keys(overviewData).length != 0 ? overviewData.gettitlesentimentcomposition : []} />
-					<CountriesArticleChartChart articledata={Object.keys(overviewData).length != 0 ? overviewData.getcountryarticletopcountdata["data"] : []} />
-					<div className='lg:col-span-2'>
-						<RatingsTable ratingdata={Object.keys(overviewData).length != 0 ? overviewData.getrating : []} />
+					{loading ? <Loading /> :
+						<TitleSentimentDistributionChart titlesentimentdata={Object.keys(overviewData).length != 0 ? overviewData.gettitlesentimentcomposition : []} />
+					}
+					{loading ? <Loading /> :
+						<CountriesArticleChartChart articledata={Object.keys(overviewData).length != 0 ? overviewData.getcountryarticletopcountdata["data"] : []} />
+					}
+					{loading ? <Loading /> :
+						<div className='lg:col-span-2'>
+							<RatingsTable ratingdata={Object.keys(overviewData).length != 0 ? overviewData.getrating : []} />
 
-					</div>
+						</div>
+					}
 				</div>
 			</main>
 		</div>

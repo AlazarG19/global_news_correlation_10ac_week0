@@ -36,11 +36,7 @@ const INITIAL_STATE = {
 	pageIndex: 0
 };
 const RatingsTable = ({ ratingdata }) => {
-	// const data = RATING_DATA
-	// const columns = ["id", "name", "category", "price", "stock", "sales"]
-	// console.log(columns)
-	// const [initialState, setInitialState] = useState("");
-	// console.log(ratingdata)
+
 	const data = useMemo(() => RATING_DATA, [RATING_DATA]);
 	const columns = useMemo(() => RATING_COLUMNS, [RATING_COLUMNS]);
 	const initialState = useMemo(() => INITIAL_STATE, [INITIAL_STATE]);
@@ -105,7 +101,6 @@ const RatingsTable = ({ ratingdata }) => {
 							transition={{ duration: 0.3 }}
 						>
 							{row.cells.map((cell) => {
-								console.log(cell.render("Cell"))
 								return (
 									<td className='px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-100 flex gap-2 items-center' {...cell.getCellProps()}>{"cell.render(Cell)"}</td>
 								);

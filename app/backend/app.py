@@ -1,13 +1,12 @@
-import sys
-import os
+# import sys
+# import os
 
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
+# sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 
 import time
 import pandas as pd
 import numpy as np
 import re
-import psycopg2
 from dotenv import load_dotenv
 import os
 from flask import Flask, jsonify
@@ -16,10 +15,8 @@ app = Flask(__name__)
 import psycopg2
 CORS(app)
 
-
-# Load environment variables from .env file
+# # Load environment variables from .env file
 load_dotenv()
-
 try:
     instance = psycopg2.connect(
         host=os.environ['DB_HOST'],
@@ -30,42 +27,34 @@ try:
     print("Connected to instance database!")
 except psycopg2.Error as e:
     print(f"Error connecting to database: {e}")
+    
+    
 def execute_query( query):
     cur = instance.cursor()
     cur.execute(query)
     return cur,cur.fetchall()    
 
-# start_time = time.time()
-
+start_time = time.time()
 cur,results = execute_query("SELECT domain,source_name,article_id, mentioned_countries,title_sentiment,content_based_region,title_length from rating")
 column_names = [desc[0] for desc in cur.description]
 rating = pd.DataFrame(results, columns=column_names)
 
-# print(f"Time taken to execute query and create rating DataFrame: {time.time() - start_time:.2f} seconds")
+print(f"Time taken to execute query and create rating DataFrame: {time.time() - start_time:.2f} seconds")
 
-# print("rating.head()")
-print(rating.columns)
-# print(rating.count())
-
-# start_time = time.time()
+start_time = time.time()
 cur,results = execute_query("SELECT * from domains_location")
 column_names = [desc[0] for desc in cur.description]
 domains_location = pd.DataFrame(results, columns=column_names)
-# print(f"Time taken to execute query and create domains_location DataFrame: {time.time() - start_time:.2f} seconds")
+print(f"Time taken to execute query and create domains_location DataFrame: {time.time() - start_time:.2f} seconds")
 
 
-# print("domains_location.head()")
-print(domains_location.columns)
 
-# start_time = time.time()
+start_time = time.time()
 cur,results = execute_query("SELECT * from traffic")
 column_names = [desc[0] for desc in cur.description]
 traffic = pd.DataFrame(results, columns=column_names)
-# print(f"Time taken to execute query and create trafficdate DataFrame: {time.time() - start_time:.2f} seconds")
+print(f"Time taken to execute query and create trafficdate DataFrame: {time.time() - start_time:.2f} seconds")
 
-
-# print("traffic.head()")
-print(traffic.columns)
 
 def get_barchartdata_with_grouping(df, x_axis, y_axis, top=10, ascending=True, grouping=""):
     ''' 
@@ -162,16 +151,6 @@ content_based_region_filtered_rating = rating[rating["content_based_region"] != 
 
 sorted_dict_top = [{"country": country, "count": count} for country, count in mention_sorted_items[-5:]]
 
-# Create histogram data
-counts, bin_edges = np.histogram(rating['title_length'], bins=10)
-
-# Prepare data in the desired format
-histogram_data = [
-    {"count": count, "item": bin_edges[i]}
-    for i, count in enumerate(counts)
-]
-histogram_data.append({"count": counts[-1], "item": bin_edges[-1]})
-print('/titlehisto',histogram_data)
 @app.route('/', methods=['GET'])
 def index():
     return "dfsdfs"

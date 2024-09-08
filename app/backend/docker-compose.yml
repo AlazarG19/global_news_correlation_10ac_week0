@@ -4,6 +4,11 @@ services:
   app:
     build: .
     ports:
-      - "7000:5000"
+      - "7070:7000"
     environment:
       - FLASK_ENV=development
+      - DB_HOST = 'global-news-dataset.c1qcge42shb7.us-east-1.rds.amazonaws.com'
+      - DB_PORT = 5432
+      - DB_DATABASE = 'global_news_dataset'
+      - DB_USERNAME = 'postgres'
+      - DB_PASSWORD = 'Qwertyqaz123'

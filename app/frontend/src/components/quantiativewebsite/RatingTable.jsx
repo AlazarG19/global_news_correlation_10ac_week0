@@ -42,8 +42,6 @@ const RatingsTable = ({ ratingdata }) => {
 	const data = ratingdata
 	const columns = RATING_COLUMNS;
 	const initialState = INITIAL_STATE;
-	console.log("daa", data)
-	console.log("init", initialState)
 	const [searchTerm, setSearchTerm] = useState("");
 
 	const {

@@ -1,14 +1,10 @@
 import { Route, Routes } from "react-router-dom";
 
 import Sidebar from "./components/common/Sidebar";
-
+import 'bootstrap/dist/css/bootstrap.min.css';
 import OverviewPage from "./pages/OverviewPage";
 import QuantitativeWebsitePage from "./pages/QuantitativeWebsitePage";
 import QuantitativeCountryPage from "./pages/QuantitativeCountryPage";
-import TitleSentimentPage from "./pages/TitleSentimentPage";
-import OrdersPage from "./pages/OrdersPage";
-import ModelingPage from "./pages/ModelingPage";
-import SettingsPage from "./pages/SettingsPage";
 
 function App() {
 	return (
@@ -24,10 +20,7 @@ function App() {
 				<Route path='/' element={<OverviewPage />} />
 				<Route path='/quantitativewebsite' element={<QuantitativeWebsitePage />} />
 				<Route path='/quantitativecountry' element={<QuantitativeCountryPage />} />
-				{/* <Route path='/titlesentiment' element={<TitleSentimentPage />} />
-				<Route path='/metadata' element={<OrdersPage />} />
-				<Route path='/modeling' element={<ModelingPage />} />
-				<Route path='/events' element={<SettingsPage />} /> */}
+
 			</Routes>
 		</div>
 	);
