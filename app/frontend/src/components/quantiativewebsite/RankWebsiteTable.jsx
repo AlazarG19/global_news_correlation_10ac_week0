@@ -34,8 +34,6 @@ const RankWebsiteTable = ({ trafficdata }) => {
 	const data = trafficdata
 	const columns = TRAFFIC_COLUMNS;
 	const initialState = INITIAL_STATE;
-	console.log("daa", data)
-	console.log("init", initialState)
 	const [searchTerm, setSearchTerm] = useState("");
 
 	const {

@@ -9,7 +9,6 @@ const COUNTRIES_ARTICLE_DATA = [
 	{ name: "Social Media", value: 18700 },
 ];
 const CountryMostArticle = ({ articledata }) => {
-	console.log(articledata)
 	return (
 		<motion.div
 			className='bg-gray-800 bg-opacity-50 backdrop-blur-md shadow-lg rounded-xl p-6 border border-gray-700'

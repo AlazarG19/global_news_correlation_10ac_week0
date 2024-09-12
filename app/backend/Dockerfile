@@ -6,10 +6,10 @@ COPY . .
 
 RUN pip install -r requirements.txt 
 
-EXPOSE 5000 
+EXPOSE 7000 
 
 ENV FILE  .env
 
-ENV PYTHONPATH /src
+ENV PYTHONPATH /app
 
 CMD ["python3","app.py"]

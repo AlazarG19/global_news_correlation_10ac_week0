@@ -11,9 +11,11 @@ import CountryLeastMention from "../components/settings/CountryLeastMention";
 import RegionMostMention from "../components/settings/RegionMostMention";
 import RegionLeastMention from "../components/settings/RegionLeastMention";
 import { useEffect, useState } from "react";
+import Loading from "../components/Loading";
 
 const QuantitativeCountryPage = () => {
 	const [option, setOption] = useState("category")
+	const [loading, setLoading] = useState(true)
 
 	const [overviewData, setOverviewData] = useState({})
 	let urls = [
@@ -37,7 +39,6 @@ const QuantitativeCountryPage = () => {
 				acc[lastSubPath] = data[index];
 				return acc;
 			}, {});
-			console.log(combinedData)
 			return combinedData;
 		} catch (error) {
 			console.error('Error fetching data:', error);
@@ -46,8 +47,8 @@ const QuantitativeCountryPage = () => {
 	useEffect(() => {
 		fetchAndCombineData(urls)
 			.then(combinedData => {
-				console.log(combinedData.getcontentregionmentioncountdata["data"])
 				setOverviewData(combinedData)
+				setLoading(false)
 			});
 
 	}, [option])
@@ -61,7 +62,10 @@ const QuantitativeCountryPage = () => {
 				<div className='grid grid-cols-1 lg:grid-cols-2 gap-6 mt-8'>
 					{/* <Dropdown options={options} onChange={this._onSelect} value={defaultOption} placeholder="Select an option" />;<CountryMostArtic /> */}
 					<div className='lg:col-span-2'>
-						<CountryMostMedia mediadata={Object.keys(overviewData).length != 0 ? overviewData.getcountrymediatopcountdata["data"] : []} />
+						{loading ? <Loading /> :
+
+							<CountryMostMedia mediadata={Object.keys(overviewData).length != 0 ? overviewData.getcountrymediatopcountdata["data"] : []} />
+						}
 					</div>
 					<div className='lg:col-span-2'>
 						<div className="flex justify-between">
@@ -80,12 +84,21 @@ const QuantitativeCountryPage = () => {
 							</div>
 						</div>
 					</div>
-					<CountryMostMention mentiondata={Object.keys(overviewData).length != 0 ? overviewData.getcontentcountrymentiontopcountdata : []} />
-					<CountryLeastMention mentiondata={Object.keys(overviewData).length != 0 ? overviewData.getcontentcountrymentionbottomcountdata : []} />
+					{loading ? <Loading /> :
+
+						<CountryMostMention mentiondata={Object.keys(overviewData).length != 0 ? overviewData.getcontentcountrymentiontopcountdata : []} />
+					}
+					{loading ? <Loading /> :
+
+						<CountryLeastMention mentiondata={Object.keys(overviewData).length != 0 ? overviewData.getcontentcountrymentionbottomcountdata : []} />
+					}
 					<div className='lg:col-span-2'>
 						<h2>Region</h2>
 					</div>
-					<RegionMostMention regiondata={Object.keys(overviewData).length != 0 ? overviewData.getcontentregionmentioncountdata["data"] : []} />
+					{loading ? <Loading /> :
+
+						<RegionMostMention regiondata={Object.keys(overviewData).length != 0 ? overviewData.getcontentregionmentioncountdata["data"] : []} />
+					}
 
 				</div>
 			</main>

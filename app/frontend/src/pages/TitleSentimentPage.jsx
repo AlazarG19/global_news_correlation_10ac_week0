@@ -34,7 +34,6 @@ const TitleSentimentPage = () => {
 				acc[lastSubPath] = data[index];
 				return acc;
 			}, {});
-			console.log(combinedData)
 			return combinedData;
 		} catch (error) {
 			console.error('Error fetching data:', error);
