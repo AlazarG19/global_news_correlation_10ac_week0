@@ -85,3 +85,18 @@
 
  - **Unique Events**: We identify 494 unique events after training the model.
  - **Event Insights**: We note that sites like GlobalNewswire and Marketscreener report many events. Key reporting topics include Google reviews, climate change, and geopolitical events related to China and Russia.
+
+## Exporting Data to PostgreSQL Database
+
+ After completing the data analysis and feature creation, the final step is to export the results to a PostgreSQL database. This can be done for both local databases and online databases like Amazon RDS.
+
+ ### Export Process:
+
+ 1. **Database Configuration**: First, set up your database configuration using environment variables for security and flexibility:
+
+ 2. **Database Exporter Class**: Create an instance of the `DatabaseExporter` class with the database credentials.
+
+ 3. **Prepare DataFrames**: We map our DataFrames to a dictionary to manage the export of multiple datasets, such as `rating`, `domains_location`, and `traffic`.
+
+ 4. **Running the Exporter**: Execute the export process using the `run` method, which exports the data to the connected PostgreSQL database.
+
